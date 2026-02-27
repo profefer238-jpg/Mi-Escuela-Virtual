@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPortal Mágico 🌟</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #FFD700;
+            --accent: #FF6B6B;
+            --success: #6BCB77;
+            --bg: #F0F4F8;
+            --text: #2D3436;
+            --jungle: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            color: var(--text);
+            transition: background 0.5s;
+        }
+
+        /* --- Estilos Generales --- */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover { transform: scale(1.05); }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        /* --- Login --- */
+        #login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), #6c5ce7);
+        }
+
+        /* --- Navegación --- */
+        nav {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .menu-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* --- Secciones --- */
+        .seccion { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        .active { display: block; }
+
+        /* --- Fondos Temáticos --- */
+        .bg-selva { background-color: #1e392a; background-image: url('https://www.transparenttextures.com/patterns/leaf.png'); color: white; }
+        .bg-espacio { background-color: #0f0c29; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); color: white; }
+
+        /* --- Galería --- */
+        #galeria-videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body id="main-body">
+
+    <div id="login-screen">
+        <div class="card" style="width: 320px; text-align: center;">
+            <h1>EduPortal 🏫</h1>
+            <p>Ingresa como 'maestro' o 'estudiante'</p>
+            <input type="text" id="username" placeholder="Usuario">
+            <button onclick="handleLogin()">Entrar 🚀</button>
+        </div>
+    </div>
+
+    <div id="main-app" style="display:none;">
+        <nav>
+            <h2 id="welcome-msg">¡Hola!</h2>
+            <button onclick="logout()" style="background: var(--accent);">Salir</button>
+        </nav>
+
+        <div class="menu-btns">
+            <button onclick="switchTab('cine-seccion')">🎬 Cine</button>
+            <button onclick="switchTab('pruebas-seccion')">🏆 Retos</button>
+            <button onclick="switchTab('escenario-seccion')">🎭 Escenario</button>
+        </div>
+
+        <div id="cine-seccion" class="seccion active">
+            <div id="admin-videos" class="card" style="display:none;">
+                <h4>Subir Clase 📽️</h4>
+                <input type="text" id="v-titulo" placeholder="Título">
+                <input type="text" id="v-url" placeholder="URL de YouTube">
+                <button onclick="guardarVideo()" style="background: var(--success);">Publicar</button>
+            </div>
+            <div id="galeria-videos"></div>
+        </div>
+
+        <div id="pruebas-seccion" class="seccion">
+            <div id="admin-pruebas" class="card" style="display:none;">
+                <h4>Crear Pregunta 📝</h4>
+                <input type="text" id="p-texto" placeholder="Pregunta">
+                <input type="text" id="p-correcta" placeholder="Respuesta">
+                <button onclick="agregarPregunta()">Añadir</button>
+            </div>
+            <div class="card" style="text-align: center;">
+                <div id="pregunta-display">¡Haz clic en un reto para comenzar!</div>
+                <div id="resultado-rango"></div>
+            </div>
+        </div>
+
+        <div id="escenario-seccion" class="seccion">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div id="visor" class="card" style="flex: 2; min-height: 300px; transition: 0.3s;">
+                    <h3>Escenario de Clase 🎭</h3>
+                    <div style="padding: 20px; border: 2px dashed #ccc; border-radius: 10px;">
+                        Contenido de la lección aparecerá aquí.
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button onclick="cambiarFondo('selva')">🌿 Selva</button>
+                        <button onclick="cambiarFondo('espacio')">🚀 Espacio</button>
+                    </div>
+                </div>
+                <div class="card" style="flex: 1;">
+                    <h3>Tu Progreso 🏅</h3>
+                    <p id="rango-display">Rango: Explorador 🏹</p>
+                    <div style="background: #eee; height: 15px; border-radius: 10px;">
+                        <div id="barra" style="background: var(--success); width: 10%; height: 100%; transition: 1s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DE NAVEGACIÓN Y LOGIN ---
+        function handleLogin() {
+            const user = document.getElementById('username').value.toLowerCase();
+            if (user === 'maestro' || user === 'estudiante') {
+                localStorage.setItem('role', user);
+                location.reload();
+            }
+        }
+
+        window.onload = () => {
+            const role = localStorage.getItem('role');
+            if (role) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('welcome-msg').innerText = role === 'maestro' ? "Panel Maestro 🍎" : "Zona Estudiante 🎒";
+                if (role === 'maestro') {
+                    document.getElementById('admin-videos').style.display = 'block';
+                    document.getElementById('admin-pruebas').style.display = 'block';
+                }
+                mostrarVideos();
+            }
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- LÓGICA DE VIDEOS ---
+        function guardarVideo() {
+            const titulo = document.getElementById('v-titulo').value;
+            const url = document.getElementById('v-url').value;
+            const id = url.split('v=')[1]?.substring(0, 11);
+            if (id) {
+                let vids = JSON.parse(localStorage.getItem('vids')) || [];
+                vids.push({titulo, id});
+                localStorage.setItem('vids', JSON.stringify(vids));
+                mostrarVideos();
+            }
+        }
+
+        function mostrarVideos() {
+            const container = document.getElementById('galeria-videos');
+            const vids = JSON.parse(localStorage.getItem('vids')) || [];
+            container.innerHTML = vids.map(v => `
+                <div class="card">
+                    <iframe width="100%" src="https://www.youtube.com/embed/${v.id}" frameborder="0"></iframe>
+                    <h4>${v.titulo}</h4>
+                </div>
+            `).join('');
+        }
+
+        // --- LÓGICA DE ESCENARIO ---
+        function cambiarFondo(tema) {
+            const visor = document.getElementById('visor');
+            visor.className = 'card ' + (tema === 'selva' ? 'bg-selva' : 'bg-espacio');
+            // Simular progreso al estudiar
+            document.getElementById('barra').style.width = '80%';
+            document.getElementById('rango-display').innerText = "Rango: Maestro Jedi ⚔️";
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
+    </script>
+</body>
+</html>
